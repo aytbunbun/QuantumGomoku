@@ -24,3 +24,10 @@
   height: calc(100% / 15);
   border: solid 1px black;
 }
+
+.stone {
+  width: calc(90%);
+  height: calc(90%);
+  background-color: white;
+  border-radius: 50%;
+}
