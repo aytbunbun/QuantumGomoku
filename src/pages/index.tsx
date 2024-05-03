@@ -22,6 +22,8 @@ const Home = () => {
   const [turnColor, setTurnColor] = useState(3);
   const [white_point, setWhitePoint] = useState(0);
   const [black_point, setBlackPoint] = useState(0);
+  const [winner, setWinner] = useState(null);
+  const [gameOver, setGameOver] = useState(false);
 
   const clickCell = (x: number, y: number) => {
     const newBoard = structuredClone(board);
@@ -74,7 +76,6 @@ const Home = () => {
         return cell;
       }),
     );
-    setBoard(observedBoard);
 
     // 横方向のラインが揃っているかチェック
     for (let i = 0; i < 15; i++) {
@@ -152,6 +153,14 @@ const Home = () => {
         setWhitePoint((prev) => prev + 1);
       }
     }
+
+    const pointDifference = Math.abs(white_point - black_point);
+    if (pointDifference >= 1) {
+      setWinner(white_point > black_point ? 'White' : 'Black');
+      setGameOver(true); // 勝敗が確定した場合、ゲームオーバーに設定する
+    } else {
+      setBoard(board); // ボードを元の状態に戻す
+    }
   };
 
   return (
@@ -183,7 +192,8 @@ const Home = () => {
           )),
         )}
       </div>
-      <button onClick={observeBoard}>観測</button>
+      {!gameOver && <button onClick={observeBoard}>観測</button>}
+      <div>{winner && `Winner: ${winner}`}</div>
       <div>
         White Point: {white_point} ｜ Black Point: {black_point}
       </div>
