@@ -20,6 +20,9 @@ const Home = () => {
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   ]);
   const [turnColor, setTurnColor] = useState(3);
+  const [white_point, setWhitePoint] = useState(0);
+  const [black_point, setBlackPoint] = useState(0);
+
   const clickCell = (x: number, y: number) => {
     const newBoard = structuredClone(board);
     if (newBoard[y][x] === 0) {
@@ -28,6 +31,129 @@ const Home = () => {
       setTurnColor(turnColor === 3 ? 6 : turnColor === 4 ? 5 : turnColor === 5 ? 3 : 4);
     }
   };
+
+  const checkCompleted = (line) => {
+    let countBlack = 0;
+    let countWhite = 0;
+    for (let i = 0; i < line.length; i++) {
+      if (line[i] === 1) {
+        countBlack++;
+        countWhite = 0;
+      } else if (line[i] === 2) {
+        countWhite++;
+        countBlack = 0;
+      } else {
+        countBlack = 0;
+        countWhite = 0;
+      }
+      if (countBlack === 5) {
+        return 'black';
+      }
+      if (countWhite === 5) {
+        return 'white';
+      }
+    }
+    return 'none';
+  };
+
+  const observeBoard = () => {
+    const observedBoard = board.map((row) =>
+      row.map((cell) => {
+        if (cell === 3) {
+          return Math.random() < 0.9 ? 1 : 2;
+        }
+        if (cell === 4) {
+          return Math.random() < 0.7 ? 1 : 2;
+        }
+        if (cell === 5) {
+          return Math.random() < 0.7 ? 2 : 1;
+        }
+        if (cell === 6) {
+          return Math.random() < 0.9 ? 2 : 1;
+        }
+        return cell;
+      }),
+    );
+    setBoard(observedBoard);
+
+    // 横方向のラインが揃っているかチェック
+    for (let i = 0; i < 15; i++) {
+      const line = observedBoard[i];
+      const winner = checkCompleted(line);
+      if (winner === 'black') {
+        setBlackPoint((prev) => prev + 1);
+      } else if (winner === 'white') {
+        setWhitePoint((prev) => prev + 1);
+      }
+    }
+
+    // 縦方向のラインが揃っているかチェック
+    for (let j = 0; j < 15; j++) {
+      const column = [];
+      for (let i = 0; i < 15; i++) {
+        column.push(observedBoard[i][j]);
+      }
+      const winner = checkCompleted(column);
+      if (winner === 'black') {
+        setBlackPoint((prev) => prev + 1);
+      } else if (winner === 'white') {
+        setWhitePoint((prev) => prev + 1);
+      }
+    }
+
+    // 右斜め方向のラインが揃っているかチェック
+    for (let i = 0; i <= 10; i++) {
+      const diagonal = [];
+      for (let j = 0; j < 15 - i; j++) {
+        diagonal.push(observedBoard[j][j + i]);
+      }
+      const winner = checkCompleted(diagonal);
+      if (winner === 'black') {
+        setBlackPoint((prev) => prev + 1);
+      } else if (winner === 'white') {
+        setWhitePoint((prev) => prev + 1);
+      }
+    }
+    for (let j = 1; j <= 10; j++) {
+      const diagonal = [];
+      for (let i = 0; i < 15 - j; i++) {
+        diagonal.push(observedBoard[i + j][i]);
+      }
+      const winner = checkCompleted(diagonal);
+      if (winner === 'black') {
+        setBlackPoint((prev) => prev + 1);
+      } else if (winner === 'white') {
+        setWhitePoint((prev) => prev + 1);
+      }
+    }
+
+    // 左斜め方向のラインが揃っているかチェック
+    for (let i = 0; i <= 10; i++) {
+      const diagonal = [];
+      for (let j = 0; j < 15 - i; j++) {
+        diagonal.push(observedBoard[j][14 - (j + i)]);
+      }
+      const winner = checkCompleted(diagonal);
+      if (winner === 'black') {
+        setBlackPoint((prev) => prev + 1);
+      } else if (winner === 'white') {
+        setWhitePoint((prev) => prev + 1);
+      }
+    }
+    for (let j = 1; j <= 10; j++) {
+      const diagonal = [];
+      for (let i = 0; i < 15 - j; i++) {
+        diagonal.push(observedBoard[i + j][14 - i]);
+      }
+      const winner = checkCompleted(diagonal);
+      if (winner === 'black') {
+        setBlackPoint((prev) => prev + 1);
+      } else if (winner === 'white') {
+        setWhitePoint((prev) => prev + 1);
+      }
+    }
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.board}>
@@ -56,6 +182,10 @@ const Home = () => {
             </div>
           )),
         )}
+      </div>
+      <button onClick={observeBoard}>観測</button>
+      <div>
+        White Point: {white_point} ｜ Black Point: {black_point}
       </div>
     </div>
   );
