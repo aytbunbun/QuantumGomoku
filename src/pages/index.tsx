@@ -22,7 +22,7 @@ const Home = () => {
   const [turnColor, setTurnColor] = useState(3);
   const [white_point, setWhitePoint] = useState(0);
   const [black_point, setBlackPoint] = useState(0);
-  const [winner, setWinner] = useState(null);
+  const [winner, setWinner] = useState<string | null>(null);
   const [gameOver, setGameOver] = useState(false);
   const [observed, setObserved] = useState(false);
 
@@ -35,7 +35,7 @@ const Home = () => {
     }
   };
 
-  const checkCompleted = (line) => {
+  const checkCompleted = (line: number[]) => {
     let countBlack = 0;
     let countWhite = 0;
     for (let i = 0; i < line.length; i++) {
@@ -197,7 +197,7 @@ const Home = () => {
         )}
       </div>
       {!gameOver && <button onClick={observeBoard}>観測</button>}
-      <div>{winner && `Winner: ${winner}`}</div>
+      <div>{winner !== null && `Winner: ${winner}`}</div>
       <div>
         White Point: {white_point} ｜ Black Point: {black_point}
       </div>
