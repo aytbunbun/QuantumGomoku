@@ -24,6 +24,7 @@ const Home = () => {
   const [black_point, setBlackPoint] = useState(0);
   const [winner, setWinner] = useState(null);
   const [gameOver, setGameOver] = useState(false);
+  const [observed, setObserved] = useState(false);
 
   const clickCell = (x: number, y: number) => {
     const newBoard = structuredClone(board);
@@ -59,107 +60,110 @@ const Home = () => {
   };
 
   const observeBoard = () => {
-    const observedBoard = board.map((row) =>
-      row.map((cell) => {
-        if (cell === 3) {
-          return Math.random() < 0.9 ? 1 : 2;
-        }
-        if (cell === 4) {
-          return Math.random() < 0.7 ? 1 : 2;
-        }
-        if (cell === 5) {
-          return Math.random() < 0.7 ? 2 : 1;
-        }
-        if (cell === 6) {
-          return Math.random() < 0.9 ? 2 : 1;
-        }
-        return cell;
-      }),
-    );
+    if (!observed) {
+      const observedBoard = board.map((row) =>
+        row.map((cell) => {
+          if (cell === 3) {
+            return Math.random() < 0.9 ? 1 : 2;
+          }
+          if (cell === 4) {
+            return Math.random() < 0.7 ? 1 : 2;
+          }
+          if (cell === 5) {
+            return Math.random() < 0.7 ? 2 : 1;
+          }
+          if (cell === 6) {
+            return Math.random() < 0.9 ? 2 : 1;
+          }
+          return cell;
+        }),
+      );
 
-    // 横方向のラインが揃っているかチェック
-    for (let i = 0; i < 15; i++) {
-      const line = observedBoard[i];
-      const winner = checkCompleted(line);
-      if (winner === 'black') {
-        setBlackPoint((prev) => prev + 1);
-      } else if (winner === 'white') {
-        setWhitePoint((prev) => prev + 1);
-      }
-    }
-
-    // 縦方向のラインが揃っているかチェック
-    for (let j = 0; j < 15; j++) {
-      const column = [];
+      // 横方向のラインが揃っているかチェック
       for (let i = 0; i < 15; i++) {
-        column.push(observedBoard[i][j]);
+        const line = observedBoard[i];
+        const winner = checkCompleted(line);
+        if (winner === 'black') {
+          setBlackPoint((prev) => prev + 1);
+        } else if (winner === 'white') {
+          setWhitePoint((prev) => prev + 1);
+        }
       }
-      const winner = checkCompleted(column);
-      if (winner === 'black') {
-        setBlackPoint((prev) => prev + 1);
-      } else if (winner === 'white') {
-        setWhitePoint((prev) => prev + 1);
-      }
-    }
 
-    // 右斜め方向のラインが揃っているかチェック
-    for (let i = 0; i <= 10; i++) {
-      const diagonal = [];
-      for (let j = 0; j < 15 - i; j++) {
-        diagonal.push(observedBoard[j][j + i]);
+      // 縦方向のラインが揃っているかチェック
+      for (let j = 0; j < 15; j++) {
+        const column = [];
+        for (let i = 0; i < 15; i++) {
+          column.push(observedBoard[i][j]);
+        }
+        const winner = checkCompleted(column);
+        if (winner === 'black') {
+          setBlackPoint((prev) => prev + 1);
+        } else if (winner === 'white') {
+          setWhitePoint((prev) => prev + 1);
+        }
       }
-      const winner = checkCompleted(diagonal);
-      if (winner === 'black') {
-        setBlackPoint((prev) => prev + 1);
-      } else if (winner === 'white') {
-        setWhitePoint((prev) => prev + 1);
-      }
-    }
-    for (let j = 1; j <= 10; j++) {
-      const diagonal = [];
-      for (let i = 0; i < 15 - j; i++) {
-        diagonal.push(observedBoard[i + j][i]);
-      }
-      const winner = checkCompleted(diagonal);
-      if (winner === 'black') {
-        setBlackPoint((prev) => prev + 1);
-      } else if (winner === 'white') {
-        setWhitePoint((prev) => prev + 1);
-      }
-    }
 
-    // 左斜め方向のラインが揃っているかチェック
-    for (let i = 0; i <= 10; i++) {
-      const diagonal = [];
-      for (let j = 0; j < 15 - i; j++) {
-        diagonal.push(observedBoard[j][14 - (j + i)]);
+      // 右斜め方向のラインが揃っているかチェック
+      for (let i = 0; i <= 10; i++) {
+        const diagonal = [];
+        for (let j = 0; j < 15 - i; j++) {
+          diagonal.push(observedBoard[j][j + i]);
+        }
+        const winner = checkCompleted(diagonal);
+        if (winner === 'black') {
+          setBlackPoint((prev) => prev + 1);
+        } else if (winner === 'white') {
+          setWhitePoint((prev) => prev + 1);
+        }
       }
-      const winner = checkCompleted(diagonal);
-      if (winner === 'black') {
-        setBlackPoint((prev) => prev + 1);
-      } else if (winner === 'white') {
-        setWhitePoint((prev) => prev + 1);
+      for (let j = 1; j <= 10; j++) {
+        const diagonal = [];
+        for (let i = 0; i < 15 - j; i++) {
+          diagonal.push(observedBoard[i + j][i]);
+        }
+        const winner = checkCompleted(diagonal);
+        if (winner === 'black') {
+          setBlackPoint((prev) => prev + 1);
+        } else if (winner === 'white') {
+          setWhitePoint((prev) => prev + 1);
+        }
       }
-    }
-    for (let j = 1; j <= 10; j++) {
-      const diagonal = [];
-      for (let i = 0; i < 15 - j; i++) {
-        diagonal.push(observedBoard[i + j][14 - i]);
-      }
-      const winner = checkCompleted(diagonal);
-      if (winner === 'black') {
-        setBlackPoint((prev) => prev + 1);
-      } else if (winner === 'white') {
-        setWhitePoint((prev) => prev + 1);
-      }
-    }
 
-    const pointDifference = Math.abs(white_point - black_point);
-    if (pointDifference >= 1) {
-      setWinner(white_point > black_point ? 'White' : 'Black');
-      setGameOver(true); // 勝敗が確定した場合、ゲームオーバーに設定する
+      // 左斜め方向のラインが揃っているかチェック
+      for (let i = 0; i <= 10; i++) {
+        const diagonal = [];
+        for (let j = 0; j < 15 - i; j++) {
+          diagonal.push(observedBoard[j][14 - (j + i)]);
+        }
+        const winner = checkCompleted(diagonal);
+        if (winner === 'black') {
+          setBlackPoint((prev) => prev + 1);
+        } else if (winner === 'white') {
+          setWhitePoint((prev) => prev + 1);
+        }
+      }
+      for (let j = 1; j <= 10; j++) {
+        const diagonal = [];
+        for (let i = 0; i < 15 - j; i++) {
+          diagonal.push(observedBoard[i + j][14 - i]);
+        }
+        const winner = checkCompleted(diagonal);
+        if (winner === 'black') {
+          setBlackPoint((prev) => prev + 1);
+        } else if (winner === 'white') {
+          setWhitePoint((prev) => prev + 1);
+        }
+      }
+      setObserved(true);
     } else {
-      setBoard(board); // ボードを元の状態に戻す
+      const pointDifference = Math.abs(white_point - black_point);
+      if (pointDifference >= 1) {
+        setWinner(white_point > black_point ? 'White' : 'Black');
+        setGameOver(true); // 勝敗が確定した場合、ゲームオーバーに設定する
+      } else {
+        setObserved(false);
+      }
     }
   };
 
