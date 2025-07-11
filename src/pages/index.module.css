@@ -13,7 +13,11 @@
   flex-wrap: wrap;
   width: 92vmin;
   height: 92vmin;
+  padding: calc(100% / 48);
   background-color: burlywood;
+  background-image: repeating-linear-gradient(#000 0, #000 1px, #0000 1px, #0000 calc(100% / 16)),
+    repeating-linear-gradient(90deg, #000 0, #000 1px, #0000 1px, #0000 calc(100% / 16));
+  animation: spin 0s infinite linear;
 }
 
 .cell {
@@ -22,7 +26,6 @@
   justify-content: center;
   width: calc(100% / 15);
   height: calc(100% / 15);
-  border: solid 1px black;
 }
 
 .stone {
@@ -30,4 +33,14 @@
   height: calc(90%);
   background-color: white;
   border-radius: 50%;
+}
+
+@keyframes spin {
+  from {
+    rotate: 0deg;
+  }
+
+  to {
+    rotate: 360deg;
+  }
 }
